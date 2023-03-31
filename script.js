@@ -13,11 +13,22 @@ const Gameboard = (function() {
         document.querySelector("#grid-9")
     ];
 
+    // Check if position is taken
+    const isTaken = function(position) {
+        if(gameboard[position].innerHTML) {
+            return true;
+        } else return false;
+    }
+
     // Mark position method
     const markMove = function(position, marker) {
+        if(isTaken(position)) {
+            console.log("That position is taken");
+            return;
+        }
         gameboard[position].innerHTML = marker;
-
     };
+    
     // Check for win method
 
     return { markMove };
