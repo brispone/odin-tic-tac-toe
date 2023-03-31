@@ -32,10 +32,14 @@ const gameboard = (function() {
             return;
         }
         board[position].innerHTML = Game.currentPlayer.marker;
+        checkForWin();
         Game.changeTurns();
     };
 
-    // Check for win method
+    // Check for win condition (or tie)
+    const checkForWin = function() {
+
+    }
 
     return { isTaken, markMove };
 }) ();
@@ -55,7 +59,7 @@ const player2 = {
 
 // Game flow module
     // Whose turn  is it?
-    const Game = {
+const Game = {
         currentPlayer: player1,
     
         changeTurns: function() {
@@ -64,5 +68,5 @@ const player2 = {
             } else Game.currentPlayer = player1;
         }
         
-    };
+};
     
