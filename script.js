@@ -28,10 +28,11 @@ const gameboard = (function() {
     // Mark position method
     const markMove = function(position) {
         if(isTaken(position)) {
-            console.log("That position is taken");
+            alert("That position is taken");
             return;
         }
         board[position].innerHTML = Game.currentPlayer.marker;
+        Game.changeTurns();
     };
 
     // Check for win method
@@ -39,16 +40,29 @@ const gameboard = (function() {
     return { isTaken, markMove };
 }) ();
 
-// Game flow module
-    // Whose turn  is it?
-const Game = {
-    currentPlayer: {
-        marker: "X"
-    }
-    
-};
-
 // Player factory
     // Player name
     // Xs or Os?
     // Is bot?
+
+const player1 = {
+    marker: "X"
+};
+
+const player2 = {
+    marker: "O"
+};
+
+// Game flow module
+    // Whose turn  is it?
+    const Game = {
+        currentPlayer: player1,
+    
+        changeTurns: function() {
+            if(Game.currentPlayer === player1) {
+                Game.currentPlayer = player2;
+            } else Game.currentPlayer = player1;
+        }
+        
+    };
+    
