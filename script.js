@@ -18,9 +18,16 @@ const gameboard = (function() {
         grid.addEventListener("click", () => markMove(index));
     });
 
+    //Render game pieces on the board
+    const render = function() {
+        board.forEach((grid, index) => {
+            grid.innerHTML = Game.state[index];
+        });
+    };
+
     // Check if position is taken
     const isTaken = function(position) {
-        if(board[position].innerHTML) {
+        if(Game.state[position]) {
             return true;
         } else return false;
     }
@@ -31,7 +38,9 @@ const gameboard = (function() {
             alert("That position is taken");
             return;
         }
-        board[position].innerHTML = Game.currentPlayer.marker;
+
+        Game.state[position] = Game.currentPlayer.marker;
+        gameboard.render();
         checkForWin();
         Game.changeTurns();
     };
@@ -41,32 +50,34 @@ const gameboard = (function() {
 
     }
 
-    return { isTaken, markMove };
+    return { isTaken, markMove, render };
 }) ();
 
 // Player factory
-    // Player name
-    // Xs or Os?
     // Is bot?
 
-const player1 = {
-    marker: "X"
-};
+const Player = (name, marker) => {
+    return { name, marker };
+}
 
-const player2 = {
-    marker: "O"
-};
+const player1 = Player("Player 1", "X");
+
+const player2 = Player("Player 2", "O");
 
 // Game flow module
     // Whose turn  is it?
-const Game = {
-        currentPlayer: player1,
+const Game = (function() {
+        let currentPlayer = player1;
     
-        changeTurns: function() {
+        const changeTurns = function() {
             if(Game.currentPlayer === player1) {
                 Game.currentPlayer = player2;
             } else Game.currentPlayer = player1;
-        }
+        };
+
+        const state = [ "", "", "", "", "", "", "", "", "" ];
+
+        return { currentPlayer, state, changeTurns };
         
-};
+}) ();
     
