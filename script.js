@@ -41,14 +41,9 @@ const gameboard = (function() {
 
         Game.state[position] = Game.currentPlayer.marker;
         gameboard.render();
-        checkForWin();
+        Game.checkForWin();
         Game.changeTurns();
     };
-
-    // Check for win condition (or tie)
-    const checkForWin = function() {
-
-    }
 
     return { isTaken, markMove, render };
 }) ();
@@ -77,7 +72,21 @@ const Game = (function() {
 
         const state = [ "", "", "", "", "", "", "", "", "" ];
 
-        return { currentPlayer, state, changeTurns };
+        const checkForWin = function() {
+            if( ((state[0] === state [1]) && (state[1] === state [2]) && state[0]) || // top row
+                ((state[3] === state [4]) && (state[4] === state [5]) && state[3]) || // middle row
+                ((state[6] === state [7]) && (state[7] === state [8]) && state[6]) || // bottom row
+                ((state[0] === state [3]) && (state[3] === state [6]) && state[0]) || // left column
+                ((state[1] === state [4]) && (state[4] === state [7]) && state[1]) || // middle column
+                ((state[2] === state [5]) && (state[5] === state [8]) && state[2]) || // right column
+                ((state[0] === state [4]) && (state[4] === state [8]) && state[0]) || // top left to bottom right diagonal
+                ((state[2] === state [4]) && (state[4] === state [6]) && state[2])    // top right to bottom left diagonal
+            ) {
+                alert("The game is over, a player has won"); }
+                
+        };
+
+        return { currentPlayer, state, changeTurns, checkForWin };
         
 }) ();
     
