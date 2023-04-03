@@ -51,13 +51,13 @@ const gameboard = (function() {
 // Player factory
     // Is bot?
 
-const Player = (name, marker) => {
-    return { name, marker };
+const Player = (name, marker, winCount) => {
+    return { name, marker, winCount };
 }
 
-const player1 = Player("Player 1", "X");
+const player1 = Player("Player 1", "X", 0);
 
-const player2 = Player("Player 2", "O");
+const player2 = Player("Player 2", "O", 0);
 
 // Game flow module
     // Whose turn  is it?
@@ -73,17 +73,28 @@ const Game = (function() {
         const state = [ "", "", "", "", "", "", "", "", "" ];
 
         const checkForWin = function() {
-            if( ((state[0] === state [1]) && (state[1] === state [2]) && state[0]) || // top row
-                ((state[3] === state [4]) && (state[4] === state [5]) && state[3]) || // middle row
-                ((state[6] === state [7]) && (state[7] === state [8]) && state[6]) || // bottom row
-                ((state[0] === state [3]) && (state[3] === state [6]) && state[0]) || // left column
-                ((state[1] === state [4]) && (state[4] === state [7]) && state[1]) || // middle column
-                ((state[2] === state [5]) && (state[5] === state [8]) && state[2]) || // right column
-                ((state[0] === state [4]) && (state[4] === state [8]) && state[0]) || // top left to bottom right diagonal
-                ((state[2] === state [4]) && (state[4] === state [6]) && state[2])    // top right to bottom left diagonal
+            if( ((state[0] === state [1]) && (state[1] === state[2]) && state[0]) || // top row
+                ((state[3] === state [4]) && (state[4] === state[5]) && state[3]) || // middle row
+                ((state[6] === state [7]) && (state[7] === state[8]) && state[6]) || // bottom row
+                ((state[0] === state [3]) && (state[3] === state[6]) && state[0]) || // left column
+                ((state[1] === state [4]) && (state[4] === state[7]) && state[1]) || // middle column
+                ((state[2] === state [5]) && (state[5] === state[8]) && state[2]) || // right column
+                ((state[0] === state [4]) && (state[4] === state[8]) && state[0]) || // top left to bottom right diagonal
+                ((state[2] === state [4]) && (state[4] === state[6]) && state[2])    // top right to bottom left diagonal
             ) {
-                alert("The game is over, a player has won"); }
+                endGame(currentPlayer);
+            } else if (state.every(Boolean)) { // returns true if every position on the board is taken already - ie, checks for tie
+                endGame();
+            }
                 
+        };
+
+        const endGame = function(winner) { // will end game, award point to winner and display appropriate message. Tie if no argument is passed
+            if(winner) {
+                console.log(`${winner.name} wins!`);
+            } else {
+                console.log("It's a tie!");
+            }
         };
 
         return { currentPlayer, state, changeTurns, checkForWin };
