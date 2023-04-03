@@ -9,16 +9,40 @@
     <title>Tic Tac Toe</title>
 </head>
 <body>
-    <div id="gameboard">
-        <div id="grid-1" class="gameboard-grid"></div>
-        <div id="grid-2" class="gameboard-grid"></div>
-        <div id="grid-3" class="gameboard-grid"></div>
-        <div id="grid-4" class="gameboard-grid"></div>
-        <div id="grid-5" class="gameboard-grid"></div>
-        <div id="grid-6" class="gameboard-grid"></div>
-        <div id="grid-7" class="gameboard-grid"></div>
-        <div id="grid-8" class="gameboard-grid"></div>
-        <div id="grid-9" class="gameboard-grid"></div>
+    <div id="main-container">
+        <div id="gameboard">
+            <div id="grid-1" class="gameboard-grid"></div>
+            <div id="grid-2" class="gameboard-grid"></div>
+            <div id="grid-3" class="gameboard-grid"></div>
+            <div id="grid-4" class="gameboard-grid"></div>
+            <div id="grid-5" class="gameboard-grid"></div>
+            <div id="grid-6" class="gameboard-grid"></div>
+            <div id="grid-7" class="gameboard-grid"></div>
+            <div id="grid-8" class="gameboard-grid"></div>
+            <div id="grid-9" class="gameboard-grid"></div>
+        </div>
+
+        <div id="player-info-container">
+            <div class="info-display" id="player1-info">
+                <h3>Player 1</h3>
+                <p>Name: <span id="p1-name"></span></p>
+                <p>Marker: <span id="p1-marker"></span></p>
+                <p>Wins: <span id="p1-wins"></span></p>
+                <button id="p1-initialize">New Player</button>
+                <button id="p1-bot">Bot</button>
+            </div>
+            <div class="info-display" id="player2-info">
+                <h3>Player 2</h3>
+                <p>Name: <span id="p2-name"></span></p>
+                <p>Marker: <span id="p2-marker"></span></p>
+                <p>Wins: <span id="p2-wins"></span></p>
+                <button id="p2-initialize">New Player</button>
+                <button id="p2-bot">Bot</button>
+            </div>
+        </div>
+        <div id="game-control-container">
+            <button id="new-game-btn">New Game</button>
+        </div>
     </div>
 </body>
 </html>

@@ -1,8 +1,17 @@
+* {
+    box-sizing: border-box;
+}
+
+#main-container {
+    display: grid;
+    grid-template-columns: repeat(2, 300px);
+    gap: 5px;
+}
+
 #gameboard {
     display: grid;
     grid-template-columns: repeat(3, 100px);
     grid-template-rows: repeat(3, 100px);
-    box-sizing: border-box;
 }
 
 .gameboard-grid {
@@ -15,4 +24,36 @@
     font-size: 75px;
     cursor: pointer;
     user-select: none;
+}
+
+#player-info-container {
+    display: grid;
+    grid-template-rows: auto auto;
+    margin-top: 5px;
+}
+
+.info-display {
+    border: 1px solid black;
+    height: 145px;
+    width: 300px;
+    display: grid;
+    grid-template-columns: auto auto;
+    grid-template-rows: repeat(auto-fill, 30px);
+    padding: 5px;
+}
+
+.active {
+    border: 3px solid red;
+}
+
+.info-display h3 {
+    grid-column: 1;
+}
+
+.info-display p {
+    grid-column: 1;
+}
+
+.info-display button {
+    grid-column: 2;
 }
