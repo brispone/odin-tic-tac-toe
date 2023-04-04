@@ -39,7 +39,6 @@ const gameboard = (function() {
         if (!Game.isActive) { return; } // do nothing if there is not currently a game being played
 
         if(isTaken(position)) {
-            alert("That position is taken");
             return;
         }
 
@@ -72,7 +71,6 @@ const Players = (function() {
             while(playermarker.length !== 1) {
                 playermarker = prompt("Please enter a single character for your marker");
             }
-            alert("Good luck!");
             player1.name = playername;
             player1.marker = playermarker;
             player1.initialized = true;
@@ -85,7 +83,6 @@ const Players = (function() {
             while(playermarker.length !== 1) {
                 playermarker = prompt("Please enter a single character for your marker");
             }
-            alert("Good luck!");
             player2.name = playername;
             player2.marker = playermarker;
             player2.initialized = true;
