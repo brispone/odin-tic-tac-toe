@@ -62,19 +62,16 @@ const Player = (name, display, marker, winCount, initialized) => {
 const player1 = Player("", document.querySelector("#player1-info"), "", 0, false);
 const player2 = Player("", document.querySelector("#player2-info"), "", 0, false);
 
-
-// Game flow module
-    // Whose turn  is it?
-const Game = (function() {
-        let currentPlayer = player1;
-        let isActive = false;
-        let whoWentFirst = null;
+const Players = (function() {
 
         // Event listeners for initializing players
 
         document.querySelector("#p1-initialize").addEventListener("click", ()=> {
             const playername = prompt("Enter a name for Player 1");
-            const playermarker = prompt(`Hello, ${playername}. What marker would you like to play with?`);
+            let playermarker = prompt(`Hello, ${playername}. What marker would you like to play with?`);
+            while(playermarker.length !== 1) {
+                playermarker = prompt("Please enter a single character for your marker");
+            }
             alert("Good luck!");
             player1.name = playername;
             player1.marker = playermarker;
@@ -84,13 +81,25 @@ const Game = (function() {
 
         document.querySelector("#p2-initialize").addEventListener("click", ()=> {
             const playername = prompt("Enter a name for Player 1");
-            const playermarker = prompt(`Hello, ${playername}. What marker would you like to play with?`);
+            let playermarker = prompt(`Hello, ${playername}. What marker would you like to play with?`);
+            while(playermarker.length !== 1) {
+                playermarker = prompt("Please enter a single character for your marker");
+            }
             alert("Good luck!");
             player2.name = playername;
             player2.marker = playermarker;
             player2.initialized = true;
             Scoreboard.update();
-        });
+        });    
+}) ();
+
+
+// Game flow module
+    // Whose turn  is it?
+const Game = (function() {
+        let currentPlayer = player1;
+        let isActive = false;
+        let whoWentFirst = null;
     
         const changeTurns = function() {
 
