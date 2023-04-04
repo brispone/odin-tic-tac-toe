@@ -80,9 +80,6 @@ const Players = (function() {
 
         // Event listeners for initializing players
 
-        const botNames = [ "TTT 3000", "Skynet", "Bot Stuff", "Jarvis" ];
-        const botMarkers = [ "X", "O", "🤖", "😎" ]
-
         document.querySelector("#p1-initialize").addEventListener("click", ()=> {
             const playername = prompt("Enter a name for Player 1");
             let playermarker = prompt(`Hello, ${playername}. What marker would you like to play with?`);
@@ -107,44 +104,6 @@ const Players = (function() {
             player2.marker = playermarker;
             player2.winCount = 0;
             player2.isBot = false;
-            player2.initialized = true;
-            Scoreboard.update();
-        });
-
-        document.querySelector("#p1-bot").addEventListener("click", ()=> {
-            let playername = botNames[Math.floor(Math.random() * 4)];
-            while(playername === player2.name) {
-                playername = botNames[Math.floor(Math.random() * 4)];
-            }
-
-            let playermarker = botMarkers[Math.floor(Math.random() * 4)];
-            while(playermarker === player2.marker) {
-                playermarker = botMarkers[Math.floor(Math.random() * 4)];
-            }
-
-            player1.name = playername;
-            player1.marker = playermarker;
-            player1.winCount = 0;
-            player1.isBot = true;
-            player1.initialized = true;
-            Scoreboard.update();
-        });
-
-        document.querySelector("#p2-bot").addEventListener("click", ()=> {
-            let playername = botNames[Math.floor(Math.random() * 4)];
-            while(playername === player1.name) {
-                playername = botNames[Math.floor(Math.random() * 4)];
-            }
-
-            let playermarker = botMarkers[Math.floor(Math.random() * 4)];
-            while(playermarker === player1.marker) {
-                playermarker = botMarkers[Math.floor(Math.random() * 4)];
-            }
-
-            player2.name = playername;
-            player2.marker = playermarker;
-            player2.winCount = 0;
-            player2.isBot = true;
             player2.initialized = true;
             Scoreboard.update();
         });
@@ -291,6 +250,50 @@ const Display = (function() {
 }) ();
 
 const Bot = (function() {
+
+    const botNames = [ "TTT 3000", "Skynet", "Bot Stuff", "Jarvis" ];
+    const botMarkers = [ "X", "O", "🤖", "😎" ]
+
+    // Event Listeners for adding Bots as players
+    
+    document.querySelector("#p1-bot").addEventListener("click", ()=> {
+        let playername = botNames[Math.floor(Math.random() * 4)];
+        while(playername === player2.name) {
+            playername = botNames[Math.floor(Math.random() * 4)];
+        }
+
+        let playermarker = botMarkers[Math.floor(Math.random() * 4)];
+        while(playermarker === player2.marker) {
+            playermarker = botMarkers[Math.floor(Math.random() * 4)];
+        }
+
+        player1.name = playername;
+        player1.marker = playermarker;
+        player1.winCount = 0;
+        player1.isBot = true;
+        player1.initialized = true;
+        Scoreboard.update();
+    });
+
+    document.querySelector("#p2-bot").addEventListener("click", ()=> {
+        let playername = botNames[Math.floor(Math.random() * 4)];
+        while(playername === player1.name) {
+            playername = botNames[Math.floor(Math.random() * 4)];
+        }
+
+        let playermarker = botMarkers[Math.floor(Math.random() * 4)];
+        while(playermarker === player1.marker) {
+            playermarker = botMarkers[Math.floor(Math.random() * 4)];
+        }
+
+        player2.name = playername;
+        player2.marker = playermarker;
+        player2.winCount = 0;
+        player2.isBot = true;
+        player2.initialized = true;
+        Scoreboard.update();
+    });
+
     const makeMove = function() {
         let position = Math.floor(Math.random() * 9);
         while (gameboard.isTaken(position)) {
