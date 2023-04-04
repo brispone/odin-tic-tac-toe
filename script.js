@@ -92,7 +92,7 @@ const Players = (function() {
         document.querySelector("#p2-initialize").addEventListener("click", ()=> {
             const playername = prompt("Enter a name for Player 1");
             let playermarker = prompt(`Hello, ${playername}. What marker would you like to play with?`);
-            while(playermarker.length !== 1) || (playermarker === player1.marker) {
+            while((playermarker.length !== 1) || (playermarker === player1.marker)) {
                 playermarker = prompt("Please enter a single character that hasn't already been chosen.");
             }
             player2.name = playername;
