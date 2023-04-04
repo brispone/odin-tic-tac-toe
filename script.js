@@ -63,19 +63,28 @@ const player1 = Player("Player 1", document.querySelector("#player1-info"), "X",
 
 const player2 = Player("Player 2", document.querySelector("#player2-info"), "O", 0);
 
+
 // Game flow module
     // Whose turn  is it?
 const Game = (function() {
         let currentPlayer = player1;
         let isActive = false;
+        let whoWentFirst = null;
     
         const changeTurns = function() {
+
+            if(!Game.isActive) { return; }
 
             player1.display.classList.toggle("active");
             player2.display.classList.toggle("active");
             if(Game.currentPlayer === player1) {
                 Game.currentPlayer = player2;
             } else Game.currentPlayer = player1;
+        };
+
+        const removeActiveClassFromPlayers = function() {
+            player1.display.classList.remove("active");
+            player2.display.classList.remove("active");
         };
 
         const state = [ "", "", "", "", "", "", "", "", "" ];
@@ -105,7 +114,7 @@ const Game = (function() {
             } else {
                 console.log("It's a tie!");
             }
-            Game.currentPlayer.display.classList.toggle("active");
+            removeActiveClassFromPlayers();
             Game.isActive = false;
         };
 
@@ -117,6 +126,13 @@ const Game = (function() {
                 state[i] = "";
             }
             gameboard.render();
+
+           if(whoWentFirst != player1) {
+                whoWentFirst = player1;
+           } else whoWentFirst = player2;
+
+           Game.currentPlayer = whoWentFirst;
+
             Game.currentPlayer.display.classList.toggle("active");
             Game.isActive = true;
         });
