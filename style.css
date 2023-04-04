@@ -47,6 +47,10 @@ body {
     background-color: #eee;
 }
 
+.gameboard-grid.winner:hover {
+    background-color: #96d3b0;
+}
+
 #player-info-container {
     display: grid;
     grid-template-rows: auto auto;
@@ -92,7 +96,7 @@ body {
 }
 
 .winner {
-    background-color: #A7EBC4;
+    background-color: #a7ebc4;
     color: white;
 }
 
