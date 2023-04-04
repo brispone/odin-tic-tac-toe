@@ -15,7 +15,10 @@ const gameboard = (function() {
 
     // Add EventListeners for clicking the grids
     board.forEach((grid, index) => {
-        grid.addEventListener("click", () => markMove(index));
+        grid.addEventListener("click", () => {
+            if(Game.currentPlayer.isBot) { return; } // Prevent player from making a move during bot turn
+            markMove(index);
+        });
     });
 
     //Render game pieces on the board
@@ -66,16 +69,18 @@ const gameboard = (function() {
 // Player factory
     // Is bot?
 
-const Player = (name, display, marker, winCount, initialized) => {
-    return { name, display, marker, winCount, initialized };
+const Player = (name, display, marker, winCount, isBot, initialized) => {
+    return { name, display, marker, winCount, isBot, initialized };
 }
 
-const player1 = Player("", document.querySelector("#player1-info"), "", 0, false);
-const player2 = Player("", document.querySelector("#player2-info"), "", 0, false);
+const player1 = Player("Player 1", document.querySelector("#player1-info"), "", 0, false, false);
+const player2 = Player("Player 2", document.querySelector("#player2-info"), "", 0, false, false);
 
 const Players = (function() {
 
         // Event listeners for initializing players
+
+        const botNames = [ "TTT 3000", "Skynet", "Bot Stuff", "Jarvis" ];
 
         document.querySelector("#p1-initialize").addEventListener("click", ()=> {
             const playername = prompt("Enter a name for Player 1");
@@ -85,6 +90,8 @@ const Players = (function() {
             }
             player1.name = playername;
             player1.marker = playermarker;
+            player1.winCount = 0;
+            player1.isBot = false;
             player1.initialized = true;
             Scoreboard.update();
         });
@@ -97,9 +104,38 @@ const Players = (function() {
             }
             player2.name = playername;
             player2.marker = playermarker;
+            player2.winCount = 0;
+            player2.isBot = false;
             player2.initialized = true;
             Scoreboard.update();
-        });    
+        });
+
+        document.querySelector("#p1-bot").addEventListener("click", ()=> {
+            let playername = botNames[Math.floor(Math.random() * 4)];
+            while(playername === player2.name) {
+                playername = botNames[Math.floor(Math.random() * 4)];
+            }
+            player1.name = playername;
+            player1.marker = "X";
+            player1.winCount = 0;
+            player1.isBot = true;
+            player1.initialized = true;
+            Scoreboard.update();
+        });
+
+        document.querySelector("#p2-bot").addEventListener("click", ()=> {
+            let playername = botNames[Math.floor(Math.random() * 4)];
+            while(playername === player1.name) {
+                playername = botNames[Math.floor(Math.random() * 4)];
+            }
+            player2.name = playername;
+            player2.marker = "O";
+            player2.winCount = 0;
+            player2.isBot = true;
+            player2.initialized = true;
+            Scoreboard.update();
+        });
+
 }) ();
 
 
@@ -119,6 +155,10 @@ const Game = (function() {
             if(Game.currentPlayer === player1) {
                 Game.currentPlayer = player2;
             } else Game.currentPlayer = player1;
+
+            if (Game.currentPlayer.isBot) {
+                setTimeout(Bot.makeMove, 500);
+            }
         };
 
         const removeHighlightingFromPlayers = function() {
@@ -196,6 +236,9 @@ const Game = (function() {
 
             Game.currentPlayer.display.classList.toggle("active");
             Game.isActive = true;
+            if(Game.currentPlayer.isBot) {
+                Bot.makeMove();
+            }
             Display.update("Game in progress.");
         });
 
@@ -232,4 +275,17 @@ const Display = (function() {
     }
 
     return { update };
+}) ();
+
+const Bot = (function() {
+    const makeMove = function() {
+        let position = Math.floor(Math.random() * 9);
+        while (gameboard.isTaken(position)) {
+            position = Math.floor(Math.random() * 9);
+        }
+
+        gameboard.markMove(position);
+    }
+
+    return { makeMove };
 }) ();
