@@ -86,12 +86,8 @@ body {
     font-size: 14px;
 }
 
-.info-display p:nth-child(2) {
+.info-display p {
     grid-row: 2;
-}
-
-.info-display p:nth-child(3) {
-    grid-row: 3;
 }
 
 .info-display button {
@@ -99,13 +95,14 @@ body {
     margin-top: -5px;
 }
 
+.info-display button:nth-child(3) {
+    grid-row: 3;
+}
+
 .info-display button:nth-child(4) {
     grid-row: 4;
 }
 
-.info-display button:nth-child(5) {
-    grid-row: 3;
-}
 
 .marker-display {
     grid-row: 1 / span 4;
