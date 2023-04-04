@@ -81,6 +81,7 @@ const Players = (function() {
         // Event listeners for initializing players
 
         const botNames = [ "TTT 3000", "Skynet", "Bot Stuff", "Jarvis" ];
+        const botMarkers = [ "X", "O", "🤖", "😎" ]
 
         document.querySelector("#p1-initialize").addEventListener("click", ()=> {
             const playername = prompt("Enter a name for Player 1");
@@ -97,7 +98,7 @@ const Players = (function() {
         });
 
         document.querySelector("#p2-initialize").addEventListener("click", ()=> {
-            const playername = prompt("Enter a name for Player 1");
+            const playername = prompt("Enter a name for Player 2");
             let playermarker = prompt(`Hello, ${playername}. What marker would you like to play with?`);
             while((playermarker.length !== 1) || (playermarker === player1.marker)) {
                 playermarker = prompt("Please enter a single character that hasn't already been chosen.");
@@ -115,8 +116,14 @@ const Players = (function() {
             while(playername === player2.name) {
                 playername = botNames[Math.floor(Math.random() * 4)];
             }
+
+            let playermarker = botMarkers[Math.floor(Math.random() * 4)];
+            while(playermarker === player2.marker) {
+                playermarker = botMarkers[Math.floor(Math.random() * 4)];
+            }
+
             player1.name = playername;
-            player1.marker = "X";
+            player1.marker = playermarker;
             player1.winCount = 0;
             player1.isBot = true;
             player1.initialized = true;
@@ -128,8 +135,14 @@ const Players = (function() {
             while(playername === player1.name) {
                 playername = botNames[Math.floor(Math.random() * 4)];
             }
+
+            let playermarker = botMarkers[Math.floor(Math.random() * 4)];
+            while(playermarker === player1.marker) {
+                playermarker = botMarkers[Math.floor(Math.random() * 4)];
+            }
+
             player2.name = playername;
-            player2.marker = "O";
+            player2.marker = playermarker;
             player2.winCount = 0;
             player2.isBot = true;
             player2.initialized = true;
