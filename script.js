@@ -294,11 +294,20 @@ const Bot = (function() {
         Scoreboard.update();
     });
 
+    const getAvailableMoves = function() {
+        const movesArray = [];
+
+        Game.state.forEach((element, index) => {
+            if(!element) {
+                movesArray.push(index);
+            }
+        });
+        return movesArray;
+    }
+
     const makeMove = function() {
-        let position = Math.floor(Math.random() * 9);
-        while (gameboard.isTaken(position)) {
-            position = Math.floor(Math.random() * 9);
-        }
+        const availableMoves = getAvailableMoves();
+        const position = availableMoves[Math.floor(Math.random() * availableMoves.length)];
 
         gameboard.markMove(position);
     }
