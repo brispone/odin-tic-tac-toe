@@ -55,13 +55,12 @@ const gameboard = (function() {
 // Player factory
     // Is bot?
 
-const Player = (name, display, marker, winCount) => {
-    return { name, display, marker, winCount };
+const Player = (name, display, marker, winCount, initialized) => {
+    return { name, display, marker, winCount, initialized };
 }
 
-const player1 = Player("Player 1", document.querySelector("#player1-info"), "X", 0);
-
-const player2 = Player("Player 2", document.querySelector("#player2-info"), "O", 0);
+const player1 = Player("", document.querySelector("#player1-info"), "", 0, false);
+const player2 = Player("", document.querySelector("#player2-info"), "", 0, false);
 
 
 // Game flow module
@@ -70,6 +69,28 @@ const Game = (function() {
         let currentPlayer = player1;
         let isActive = false;
         let whoWentFirst = null;
+
+        // Event listeners for initializing players
+
+        document.querySelector("#p1-initialize").addEventListener("click", ()=> {
+            const playername = prompt("Enter a name for Player 1");
+            const playermarker = prompt(`Hello, ${playername}. What marker would you like to play with?`);
+            alert("Good luck!");
+            player1.name = playername;
+            player1.marker = playermarker;
+            player1.initialized = true;
+            Scoreboard.update();
+        });
+
+        document.querySelector("#p2-initialize").addEventListener("click", ()=> {
+            const playername = prompt("Enter a name for Player 1");
+            const playermarker = prompt(`Hello, ${playername}. What marker would you like to play with?`);
+            alert("Good luck!");
+            player2.name = playername;
+            player2.marker = playermarker;
+            player2.initialized = true;
+            Scoreboard.update();
+        });
     
         const changeTurns = function() {
 
@@ -82,9 +103,11 @@ const Game = (function() {
             } else Game.currentPlayer = player1;
         };
 
-        const removeActiveClassFromPlayers = function() {
+        const removeHighlightingFromPlayers = function() {
             player1.display.classList.remove("active");
+            player1.display.classList.remove("winner");
             player2.display.classList.remove("active");
+            player2.display.classList.remove("winner");
         };
 
         const state = [ "", "", "", "", "", "", "", "", "" ];
@@ -107,25 +130,31 @@ const Game = (function() {
         };
 
         const endGame = function(winner) { // will end game, award point to winner and display appropriate message. Tie if no argument is passed
+
+            removeHighlightingFromPlayers();
+
             if(winner) {
-                console.log(`${winner.name} wins!`);
+                Display.update(`${winner.name} wins!`);
                 winner.winCount++;
-                //Scoreboard.update();
+                winner.display.classList.add("winner");
+                Scoreboard.update();
             } else {
-                console.log("It's a tie!");
+                Display.update("It's a tie!");
             }
-            removeActiveClassFromPlayers();
             Game.isActive = false;
         };
 
         // Event listener for new button game - resets current game, won't start a game if there are not 2 players initialized
 
-        document.querySelector("#new-game-btn").addEventListener("click", (event) => {
+        document.querySelector("#new-game-btn").addEventListener("click", () => {
 
-            for(let i = state.length; i >= 0; i--) { // clear the gamestate
+            if(!player1.initialized || !player2.initialized) { return  };
+
+            for(let i = 0; i < state.length; i++) { // clear the gamestate
                 state[i] = "";
             }
             gameboard.render();
+            removeHighlightingFromPlayers();
 
            if(whoWentFirst != player1) {
                 whoWentFirst = player1;
@@ -135,12 +164,13 @@ const Game = (function() {
 
             Game.currentPlayer.display.classList.toggle("active");
             Game.isActive = true;
+            Display.update("Game in progress.");
         });
 
         return { currentPlayer, state, isActive, changeTurns, checkForWin };
         
 }) ();
-/*
+
 const Scoreboard = (function() {
 
     const playerOneName = document.querySelector("#p1-name");
@@ -151,13 +181,23 @@ const Scoreboard = (function() {
     const playerTwoWins = document.querySelector("#p2-wins");
 
     const update = function() {
-        Scoreboard.playerOneName.innerHTML(player1.name);
-        Scoreboard.playerOneMarker.innerHTML(player1.marker);
-        Scoreboard.playerOneWins.innerHTML(player1.wins);
-        Scoreboard.playerTwoName.innerHTML(player2.name);
-        Scoreboard.playerTwoMarker.innerHTML(player2.marker);
-        Scoreboard.playerTwoWins.innerHTML(player2.wins);
+        playerOneName.innerHTML = player1.name;
+        playerOneMarker.innerHTML = player1.marker;
+        playerOneWins.innerHTML = player1.winCount;
+        playerTwoName.innerHTML = player2.name;
+        playerTwoMarker.innerHTML = player2.marker;
+        playerTwoWins.innerHTML = player2.winCount;
     };
 
     return { update };
-}) (); */
+}) (); 
+
+const Display = (function() {
+    const displayBox = document.querySelector("#display-box");
+
+    const update = function(message) {
+        displayBox.innerHTML = message;
+    }
+
+    return { update };
+}) ();

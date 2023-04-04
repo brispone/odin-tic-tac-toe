@@ -46,6 +46,10 @@
     border: 3px solid red;
 }
 
+.winner {
+    border: 3px solid green;
+}
+
 .info-display h3 {
     grid-column: 1;
 }
