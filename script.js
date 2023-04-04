@@ -25,6 +25,18 @@ const gameboard = (function() {
         });
     };
 
+    const highlightSquares = function(one, two, three) {
+        board[one].classList.add("winner");
+        board[two].classList.add("winner");
+        board[three].classList.add("winner");
+    };
+
+    const removeHighlighting = function() {
+        board.forEach((grid) => {
+            grid.classList.remove("winner");
+        });
+    };
+
 
     // Check if position is taken
     const isTaken = function(position) {
@@ -48,7 +60,7 @@ const gameboard = (function() {
         Game.changeTurns();
     };
 
-    return { isTaken, markMove, render };
+    return { isTaken, markMove, render, highlightSquares, removeHighlighting };
 }) ();
 
 // Player factory
@@ -119,20 +131,33 @@ const Game = (function() {
         const state = [ "", "", "", "", "", "", "", "", "" ];
 
         const checkForWin = function() {
-            if( ((state[0] === state [1]) && (state[1] === state[2]) && state[0]) || // top row
-                ((state[3] === state [4]) && (state[4] === state[5]) && state[3]) || // middle row
-                ((state[6] === state [7]) && (state[7] === state[8]) && state[6]) || // bottom row
-                ((state[0] === state [3]) && (state[3] === state[6]) && state[0]) || // left column
-                ((state[1] === state [4]) && (state[4] === state[7]) && state[1]) || // middle column
-                ((state[2] === state [5]) && (state[5] === state[8]) && state[2]) || // right column
-                ((state[0] === state [4]) && (state[4] === state[8]) && state[0]) || // top left to bottom right diagonal
-                ((state[2] === state [4]) && (state[4] === state[6]) && state[2])    // top right to bottom left diagonal
-            ) {
+            if( ((state[0] === state [1]) && (state[1] === state[2]) && state[0]) ) { // top row
                 endGame(Game.currentPlayer);
-            } else if (state.every(Boolean)) { // returns true if every position on the board is taken already - ie, checks for tie
+                gameboard.highlightSquares(0, 1, 2);
+             } else if ((state[3] === state [4]) && (state[4] === state[5]) && state[3]) { // middle row
+                endGame(Game.currentPlayer);
+                gameboard.highlightSquares(3, 4, 5);
+             } else if ((state[6] === state [7]) && (state[7] === state[8]) && state[6]) { // bottom row
+                endGame(Game.currentPlayer);
+                gameboard.highlightSquares(6, 7, 8);
+             } else if ((state[0] === state [3]) && (state[3] === state[6]) && state[0]) { // left column
+                endGame(Game.currentPlayer);
+                gameboard.highlightSquares(0, 3, 6);
+             } else if ((state[1] === state [4]) && (state[4] === state[7]) && state[1]) { // middle column
+                endGame(Game.currentPlayer);
+                gameboard.highlightSquares(1, 4, 7);
+             } else if ((state[2] === state [5]) && (state[5] === state[8]) && state[2]) { // right column
+                endGame(Game.currentPlayer);
+                gameboard.highlightSquares(2, 5, 8);
+             } else if ((state[0] === state [4]) && (state[4] === state[8]) && state[0]) { // top left to bottom right diagonal
+                endGame(Game.currentPlayer);
+                gameboard.highlightSquares(0, 4, 8);
+             } else if ((state[2] === state [4]) && (state[4] === state[6]) && state[2]) { // top right to bottom left diagonal
+                endGame(Game.currentPlayer);
+                gameboard.highlightSquares(2, 4, 6);
+             } else if (state.every(Boolean)) { // returns true if every position on the board is taken already - ie, checks for tie
                 endGame();
             }
-                
         };
 
         const endGame = function(winner) { // will end game, award point to winner and display appropriate message. Tie if no argument is passed
@@ -161,6 +186,7 @@ const Game = (function() {
             }
             gameboard.render();
             removeHighlightingFromPlayers();
+            gameboard.removeHighlighting();
 
            if(whoWentFirst != player1) {
                 whoWentFirst = player1;
@@ -180,10 +206,10 @@ const Game = (function() {
 const Scoreboard = (function() {
 
     const playerOneName = document.querySelector("#p1-name");
-    const playerOneMarker = document.querySelector("#p1-marker");
+    const playerOneMarker = document.querySelector("#p1-marker-display");
     const playerOneWins = document.querySelector("#p1-wins");
     const playerTwoName = document.querySelector("#p2-name");
-    const playerTwoMarker = document.querySelector("#p2-marker");
+    const playerTwoMarker = document.querySelector("#p2-marker-display");
     const playerTwoWins = document.querySelector("#p2-wins");
 
     const update = function() {
