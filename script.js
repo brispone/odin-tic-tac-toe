@@ -59,7 +59,7 @@ const gameboard = (function() {
 
         Game.state[position] = Game.currentPlayer.marker;
         gameboard.render();
-        Game.checkForWin();
+        Game.checkForWin(Game.state);
         Game.changeTurns();
     };
 
@@ -142,34 +142,45 @@ const Game = (function() {
 
         const state = [ "", "", "", "", "", "", "", "", "" ];
 
-        const checkForWin = function() {
-            if( ((state[0] === state [1]) && (state[1] === state[2]) && state[0]) ) { // top row
+        // take a gamestate as the argument, and optional testing argument - if testing is true, will only return winner and not perform endgame functions
+        const checkForWin = function(gamestate, testing) {
+            if( ((gamestate[0] === gamestate [1]) && (gamestate[1] === gamestate[2]) && gamestate[0]) ) { // top row
+                if(testing) { return gamestate[0]; }
                 endGame(Game.currentPlayer);
                 gameboard.highlightSquares(0, 1, 2);
-             } else if ((state[3] === state [4]) && (state[4] === state[5]) && state[3]) { // middle row
+             } else if ((gamestate[3] === gamestate [4]) && (gamestate[4] === gamestate[5]) && gamestate[3]) { // middle row
+                if(testing) { return gamestate[3]; }
                 endGame(Game.currentPlayer);
                 gameboard.highlightSquares(3, 4, 5);
-             } else if ((state[6] === state [7]) && (state[7] === state[8]) && state[6]) { // bottom row
+             } else if ((gamestate[6] === gamestate [7]) && (gamestate[7] === gamestate[8]) && gamestate[6]) { // bottom row
+                if(testing) { return gamestate[6]; }
                 endGame(Game.currentPlayer);
                 gameboard.highlightSquares(6, 7, 8);
-             } else if ((state[0] === state [3]) && (state[3] === state[6]) && state[0]) { // left column
+             } else if ((gamestate[0] === gamestate [3]) && (gamestate[3] === gamestate[6]) && gamestate[0]) { // left column
+                if(testing) { return gamestate[0]; }
                 endGame(Game.currentPlayer);
                 gameboard.highlightSquares(0, 3, 6);
-             } else if ((state[1] === state [4]) && (state[4] === state[7]) && state[1]) { // middle column
+             } else if ((gamestate[1] === gamestate [4]) && (gamestate[4] === gamestate[7]) && gamestate[1]) { // middle column
+                if(testing) { return gamestate[1]; }
                 endGame(Game.currentPlayer);
                 gameboard.highlightSquares(1, 4, 7);
-             } else if ((state[2] === state [5]) && (state[5] === state[8]) && state[2]) { // right column
+             } else if ((gamestate[2] === gamestate [5]) && (gamestate[5] === gamestate[8]) && gamestate[2]) { // right column
+                if(testing) { return gamestate[2]; }
                 endGame(Game.currentPlayer);
                 gameboard.highlightSquares(2, 5, 8);
-             } else if ((state[0] === state [4]) && (state[4] === state[8]) && state[0]) { // top left to bottom right diagonal
+             } else if ((gamestate[0] === gamestate [4]) && (gamestate[4] === gamestate[8]) && gamestate[0]) { // top left to bottom right diagonal
+                if(testing) { return gamestate[0]; }
                 endGame(Game.currentPlayer);
                 gameboard.highlightSquares(0, 4, 8);
-             } else if ((state[2] === state [4]) && (state[4] === state[6]) && state[2]) { // top right to bottom left diagonal
+             } else if ((gamestate[2] === gamestate [4]) && (gamestate[4] === gamestate[6]) && gamestate[2]) { // top right to bottom left diagonal
+                if(testing) { return gamestate[2]; }
                 endGame(Game.currentPlayer);
                 gameboard.highlightSquares(2, 4, 6);
-             } else if (state.every(Boolean)) { // returns true if every position on the board is taken already - ie, checks for tie
+             } else if (gamestate.every(Boolean)) { // returns true if every position on the board is taken already - ie, checks for tie
+                if(testing) { return "tie"; }
                 endGame();
             }
+            return null;
         };
 
         const endGame = function(winner) { // will end game, award point to winner and display appropriate message. Tie if no argument is passed
@@ -294,10 +305,10 @@ const Bot = (function() {
         Scoreboard.update();
     });
 
-    const getAvailableMoves = function() {
+    const getAvailableMoves = function(gamestate) {
         const movesArray = [];
 
-        Game.state.forEach((element, index) => {
+        gamestate.forEach((element, index) => {
             if(!element) {
                 movesArray.push(index);
             }
@@ -306,11 +317,68 @@ const Bot = (function() {
     }
 
     const makeMove = function() {
-        const availableMoves = getAvailableMoves();
-        const position = availableMoves[Math.floor(Math.random() * availableMoves.length)];
-
+        const availableMoves = getAvailableMoves(Game.state);
+        //const position = availableMoves[Math.floor(Math.random() * availableMoves.length)];
+        const position = minimax(Game.state, Game.currentPlayer.marker, Game.currentPlayer.marker).move;
         gameboard.markMove(position);
     }
 
-    return { makeMove };
+    return { makeMove, getAvailableMoves };
 }) ();
+
+
+/* MiniMax Pseudo Code
+
+feed in game state and maximizing player and current player
+check if the game has ended, if yes
+    return 1 if the winner is the maximizer
+    return -1 if the winner is the minimizer
+    return 0 if it's a tie
+make a copy of the current game state
+get all available moves
+loop through each iteration of the board state with this new move, calling the minimax function on each one, but w/ opposite player
+
+*/
+
+function minimax(gamestate, currentMarker, maxMarker) {
+
+    const winner = Game.checkForWin(gamestate, true);
+    const minMarker = (currentMarker === player1.marker) ? player2.marker : player1.marker;
+
+    if(winner) {
+        let score;
+        if(winner === currentMarker) {
+            score = 1;
+        } else if (winner === "tie") {
+            score = 0;
+        } else score = -1;
+        return { score: score, move: null };
+    }
+
+    const availableMoves = Bot.getAvailableMoves(gamestate);
+    let bestScore;
+    let bestMove;
+
+    if(currentMarker === maxMarker) {
+        bestScore = -Infinity;
+    } else bestScore = Infinity;
+
+    availableMoves.forEach(moveSpot => {
+        const newGamestate = [...gamestate];
+        newGamestate[moveSpot] = currentMarker;
+        const result = minimax(newGamestate, minMarker, maxMarker);
+
+        if(currentMarker === maxMarker) {
+            if(result.score > bestScore) {
+                bestScore = result.score;
+                bestMove = moveSpot;
+            }
+        } else {
+            if(result.score < bestScore) {
+                bestScore = result.score;
+                bestMove = moveSpot;
+            }
+        }
+    });
+    return { score: bestScore, move: bestMove };
+}
