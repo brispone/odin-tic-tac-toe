@@ -95,14 +95,15 @@ body {
     margin-top: -5px;
 }
 
-.info-display button:nth-child(3) {
-    grid-row: 3;
+.bot-btn-container {
+    display: flex;
 }
 
-.info-display button:nth-child(4) {
-    grid-row: 4;
+.bot-btn-container button {
+    width: 62px;
+    height: 32px;
+    font-size: 0.8rem;
 }
-
 
 .marker-display {
     grid-row: 1 / span 4;
