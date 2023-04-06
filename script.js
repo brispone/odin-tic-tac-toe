@@ -73,8 +73,8 @@ const Player = (name, display, marker, winCount, isBot, hardmode, initialized) =
     return { name, display, marker, winCount, isBot, hardmode, initialized };
 }
 
-const player1 = Player("Player 1", document.querySelector("#player1-info"), "", 0, false, false, false);
-const player2 = Player("Player 2", document.querySelector("#player2-info"), "", 0, false, false, false);
+let player1 = Player("Player 1", document.querySelector("#player1-info"), "", 0, false, false, false);
+let player2 = Player("Player 2", document.querySelector("#player2-info"), "", 0, false, false, false);
 
 const Players = (function() {
 
@@ -268,19 +268,19 @@ const Bot = (function() {
     // Event Listeners for adding Bots as players
     
     document.querySelector("#p1-bot-easy").addEventListener("click", ()=> {
-        initializeP1Bot(false);
+        initializeBot(1, false);
     });
 
     document.querySelector("#p1-bot-hard").addEventListener("click", ()=> {
-        initializeP1Bot(true);
+        initializeBot(1, true);
     });
 
     document.querySelector("#p2-bot-easy").addEventListener("click", ()=> {
-        initializeP2Bot(false);
+        initializeBot(2, false);
     });
 
     document.querySelector("#p2-bot-hard").addEventListener("click", ()=> {
-        initializeP2Bot(true);
+        initializeBot(2, true);
     });
 
     function initializeP1Bot(hardmode) {
@@ -320,6 +320,30 @@ const Bot = (function() {
         player2.isBot = true;
         player2.hardmode = hardmode;
         player2.initialized = true;
+        Scoreboard.update();
+    }
+
+    function initializeBot(player, hardmode) {
+        let playername = botNames[Math.floor(Math.random() * 4)];
+        while(playername === player1.name) {
+            playername = botNames[Math.floor(Math.random() * 4)];
+        }
+
+        let playermarker = botMarkers[Math.floor(Math.random() * 4)];
+        while(playermarker === player1.marker) {
+            playermarker = botMarkers[Math.floor(Math.random() * 4)];
+        }
+
+        const newPlayer =  Player(playername, "", playermarker, 0, true, hardmode, true);
+
+        if (player === 1) {
+            newPlayer.display = document.querySelector("#player1-info");
+            player1 = newPlayer;
+        } else {
+            newPlayer.display = document.querySelector("#player2-info");
+            player2 = newPlayer;
+        }
+
         Scoreboard.update();
     }
 
