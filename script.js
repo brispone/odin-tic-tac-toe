@@ -326,20 +326,6 @@ const Bot = (function() {
     return { makeMove, getAvailableMoves };
 }) ();
 
-
-/* MiniMax Pseudo Code
-
-feed in game state and maximizing player and current player
-check if the game has ended, if yes
-    return 1 if the winner is the maximizer
-    return -1 if the winner is the minimizer
-    return 0 if it's a tie
-make a copy of the current game state
-get all available moves
-loop through each iteration of the board state with this new move, calling the minimax function on each one, but w/ opposite player
-
-*/
-
 function minimax(gamestate, currentMarker, maxMarker) {
 
     const winner = Game.checkForWin(gamestate, true);
@@ -347,7 +333,7 @@ function minimax(gamestate, currentMarker, maxMarker) {
 
     if(winner) {
         let score;
-        if(winner === currentMarker) {
+        if(winner === maxMarker) {
             score = 1;
         } else if (winner === "tie") {
             score = 0;
