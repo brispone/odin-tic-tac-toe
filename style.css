@@ -101,7 +101,6 @@ body {
 
 .bot-btn-container button {
     width: 62px;
-    height: 32px;
     font-size: 0.8rem;
 }
 
@@ -149,7 +148,7 @@ button {
     color: white;
     margin: 5px;
     width: 100px;
-    height: 25px; 
+    height: 30px; 
     cursor: pointer;
     transition: background-color 0.2s;
     font-size: 14px;
