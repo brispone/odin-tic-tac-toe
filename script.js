@@ -81,32 +81,33 @@ const Players = (function() {
         // Event listeners for initializing players
 
         document.querySelector("#p1-initialize").addEventListener("click", ()=> {
-            const playername = prompt("Enter a name for Player 1");
-            let playermarker = prompt(`Hello, ${playername}. What marker would you like to play with?`);
-            while((playermarker.length !== 1) || (playermarker === player2.marker)) {
-                playermarker = prompt("Please enter a single character that hasn't already been chosen.");
-            }
-            player1.name = playername;
-            player1.marker = playermarker;
-            player1.winCount = 0;
-            player1.isBot = false;
-            player1.initialized = true;
-            Scoreboard.update();
+            initializePlayer(1);
         });
 
         document.querySelector("#p2-initialize").addEventListener("click", ()=> {
-            const playername = prompt("Enter a name for Player 2");
+            initializePlayer(2);
+        });
+
+        function initializePlayer(player) {
+            
+            const playername = prompt(`Enter a name for Player ${player}`);
             let playermarker = prompt(`Hello, ${playername}. What marker would you like to play with?`);
-            while((playermarker.length !== 1) || (playermarker === player1.marker)) {
+            while((playermarker.length !== 1) || (playermarker === (player === 1 ? player2.marker : player1.marker))) {
                 playermarker = prompt("Please enter a single character that hasn't already been chosen.");
             }
-            player2.name = playername;
-            player2.marker = playermarker;
-            player2.winCount = 0;
-            player2.isBot = false;
-            player2.initialized = true;
+
+            const newPlayer =  Player(playername, "", playermarker, 0, false, false, true);
+    
+            if (player === 1) {
+                newPlayer.display = document.querySelector("#player1-info");
+                player1 = newPlayer;
+            } else {
+                newPlayer.display = document.querySelector("#player2-info");
+                player2 = newPlayer;
+            }
+    
             Scoreboard.update();
-        });
+        }
 
 }) ();
 
@@ -282,46 +283,6 @@ const Bot = (function() {
     document.querySelector("#p2-bot-hard").addEventListener("click", ()=> {
         initializeBot(2, true);
     });
-
-    function initializeP1Bot(hardmode) {
-        let playername = botNames[Math.floor(Math.random() * 4)];
-        while(playername === player2.name) {
-            playername = botNames[Math.floor(Math.random() * 4)];
-        }
-
-        let playermarker = botMarkers[Math.floor(Math.random() * 4)];
-        while(playermarker === player2.marker) {
-            playermarker = botMarkers[Math.floor(Math.random() * 4)];
-        }
-
-        player1.name = playername;
-        player1.marker = playermarker;
-        player1.winCount = 0;
-        player1.isBot = true;
-        player1.hardmode = hardmode;
-        player1.initialized = true;
-        Scoreboard.update();
-    }
-
-    function initializeP2Bot(hardmode) {
-        let playername = botNames[Math.floor(Math.random() * 4)];
-        while(playername === player1.name) {
-            playername = botNames[Math.floor(Math.random() * 4)];
-        }
-
-        let playermarker = botMarkers[Math.floor(Math.random() * 4)];
-        while(playermarker === player1.marker) {
-            playermarker = botMarkers[Math.floor(Math.random() * 4)];
-        }
-
-        player2.name = playername;
-        player2.marker = playermarker;
-        player2.winCount = 0;
-        player2.isBot = true;
-        player2.hardmode = hardmode;
-        player2.initialized = true;
-        Scoreboard.update();
-    }
 
     function initializeBot(player, hardmode) {
         let playername = botNames[Math.floor(Math.random() * 4)];
