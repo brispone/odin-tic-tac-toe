@@ -69,12 +69,12 @@ const gameboard = (function() {
 // Player factory
     // Is bot?
 
-const Player = (name, display, marker, winCount, isBot, initialized) => {
-    return { name, display, marker, winCount, isBot, initialized };
+const Player = (name, display, marker, winCount, isBot, hardmode, initialized) => {
+    return { name, display, marker, winCount, isBot, hardmode, initialized };
 }
 
-const player1 = Player("Player 1", document.querySelector("#player1-info"), "", 0, false, false);
-const player2 = Player("Player 2", document.querySelector("#player2-info"), "", 0, false, false);
+const player1 = Player("Player 1", document.querySelector("#player1-info"), "", 0, false, false, false);
+const player2 = Player("Player 2", document.querySelector("#player2-info"), "", 0, false, false, false);
 
 const Players = (function() {
 
@@ -267,7 +267,23 @@ const Bot = (function() {
 
     // Event Listeners for adding Bots as players
     
-    document.querySelector("#p1-bot").addEventListener("click", ()=> {
+    document.querySelector("#p1-bot-easy").addEventListener("click", ()=> {
+        initializeP1Bot(false);
+    });
+
+    document.querySelector("#p1-bot-hard").addEventListener("click", ()=> {
+        initializeP1Bot(true);
+    });
+
+    document.querySelector("#p2-bot-easy").addEventListener("click", ()=> {
+        initializeP2Bot(false);
+    });
+
+    document.querySelector("#p2-bot-hard").addEventListener("click", ()=> {
+        initializeP2Bot(true);
+    });
+
+    function initializeP1Bot(hardmode) {
         let playername = botNames[Math.floor(Math.random() * 4)];
         while(playername === player2.name) {
             playername = botNames[Math.floor(Math.random() * 4)];
@@ -282,11 +298,12 @@ const Bot = (function() {
         player1.marker = playermarker;
         player1.winCount = 0;
         player1.isBot = true;
+        player1.hardmode = hardmode;
         player1.initialized = true;
         Scoreboard.update();
-    });
+    }
 
-    document.querySelector("#p2-bot").addEventListener("click", ()=> {
+    function initializeP2Bot(hardmode) {
         let playername = botNames[Math.floor(Math.random() * 4)];
         while(playername === player1.name) {
             playername = botNames[Math.floor(Math.random() * 4)];
@@ -301,9 +318,11 @@ const Bot = (function() {
         player2.marker = playermarker;
         player2.winCount = 0;
         player2.isBot = true;
+        player2.hardmode = hardmode;
         player2.initialized = true;
         Scoreboard.update();
-    });
+    }
+
 
     const getAvailableMoves = function(gamestate) {
         const movesArray = [];
@@ -318,8 +337,13 @@ const Bot = (function() {
 
     const makeMove = function() {
         const availableMoves = getAvailableMoves(Game.state);
-        //const position = availableMoves[Math.floor(Math.random() * availableMoves.length)];
-        const position = minimax(Game.state, Game.currentPlayer.marker, Game.currentPlayer.marker).move;
+        let position;
+
+        if(Game.currentPlayer.hardmode) { // if hard bot, use minimax algorithm
+            position = minimax(Game.state, Game.currentPlayer.marker, Game.currentPlayer.marker).move;
+        } else { // if easy bot, choose random move
+            position = availableMoves[Math.floor(Math.random() * availableMoves.length)];
+        }
         gameboard.markMove(position);
     }
 
